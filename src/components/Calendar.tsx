@@ -4,49 +4,70 @@ import { Menu, PlusCircle, X, XCircle } from "lucide-react";
 
 const CalendarApp = () => {
   const currentYear = dayjs().year();
-  const [selectedDate, setSelectedDate] = useState(
-    dayjs().format("YYYY-MM-DD")
-  );
-
-  //   const [events, setEvents] = useState<{ date: string; title: string; description: string }[]>([
-  //     { date: "2025-03-19", title: "Sad Day", description: "Today has been a rough day." },
-  //     { date: "2025-03-20", title: "Meeting", description: "Project sync-up at 10 AM." },
-  //   ]);
-
+  const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
+  const [events, setEvents] = useState<{ date: string; title: string; description: string }[]>([
+    { date: "2025-03-19", title: "Sad Day", description: "Today has been a rough day." },
+    { date: "2025-03-20", title: "Meeting", description: "Project sync-up at 10 AM." },
+  ]);
   const [showForm, setShowForm] = useState(false);
   const [newEvent, setNewEvent] = useState({ title: "", description: "" });
-
-  const handleAddEvent = () => {
-    if (!newEvent.title.trim()) return;
-    setEvents([...events, { date: selectedDate, ...newEvent }]);
-    setNewEvent({ title: "", description: "" });
-    setShowForm(false);
-  };
-
-  const [events, setEvents] = useState<
-    { date: string; title: string; description: string }[]
-  >([
-    {
-      date: "2025-03-19",
-      title: "Sad Day",
-      description: "Today has been a rough day.",
-    },
-    {
-      date: "2025-03-20",
-      title: "Meeting",
-      description: "Project sync-up at 10 AM.",
-    },
-  ]);
-
   const [months, setMonths] = useState(() =>
     Array.from({ length: dayjs().month() + 1 }, (_, i) =>
       dayjs(`${currentYear}-${i + 1}-01`)
     )
   );
-
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement | null>(null); // ✅ Explicitly definig Container Ref
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
+  // State for tracking the event being edited
+  const [editingEvent, setEditingEvent] = useState<{ date: string; title: string; description: string } | null>(null);
+
+  // Handle opening the form for adding a new event
+  const handleAddEventClick = () => {
+    setEditingEvent(null); // Reset editing mode
+    setNewEvent({ title: "", description: "" }); // Clear form fields
+    setShowForm(true);
+  };
+
+  // Handle opening the form for editing an event
+  const handleEditClick = (event: { date: string; title: string; description: string }) => {
+    setEditingEvent(event); // Set the event to be edited
+    setNewEvent({ title: event.title, description: event.description }); // Populate form fields
+    setShowForm(true);
+  };
+
+  // Handle saving the event (either adding or editing)
+  const handleSaveEvent = () => {
+    if (!newEvent.title.trim()) return;
+
+    if (editingEvent) {
+      // Editing an existing event
+      setEvents((prevEvents) =>
+        prevEvents.map((ev) =>
+          ev.date === editingEvent.date && ev.title === editingEvent.title
+            ? { ...ev, title: newEvent.title, description: newEvent.description }
+            : ev
+        )
+      );
+    } else {
+      // Adding a new event
+      setEvents([...events, { date: selectedDate, ...newEvent }]);
+    }
+
+    // Reset form and exit edit/add mode
+    setNewEvent({ title: "", description: "" });
+    setEditingEvent(null);
+    setShowForm(false);
+  };
+
+  // Handle canceling the form
+  const handleCancel = () => {
+    setNewEvent({ title: "", description: "" }); // Clear form fields
+    setEditingEvent(null); // Exit edit mode
+    setShowForm(false); // Hide the form
+  };
+
+  // Load the previous month
   const loadPreviousMonth = useCallback(() => {
     const firstMonth = months[0].subtract(1, "month");
     if (firstMonth.year() === dayjs().year()) {
@@ -54,6 +75,7 @@ const CalendarApp = () => {
     }
   }, [months]);
 
+  // Load the next month
   const loadNextMonth = useCallback(() => {
     const lastMonth = months[months.length - 1].add(1, "month");
     if (lastMonth.year() === dayjs().year()) {
@@ -61,10 +83,12 @@ const CalendarApp = () => {
     }
   }, [months]);
 
+  // Scroll behavior and IntersectionObserver setup
   useEffect(() => {
     window.scrollTo(0, 2); // Scrolls to the top when the component mounts
     const container = containerRef.current;
     if (!container) return;
+
     container.scrollTop = 500; // Scroll to 500px from the top
 
     const observer = new IntersectionObserver(
@@ -97,15 +121,11 @@ const CalendarApp = () => {
       <div className="flex justify-between items-center p-4 bg-gray-800 shadow-md">
         <h1 className="text-xl font-bold">Journal App</h1>
         <button
-          onClick={() => setShowForm((prev) => !prev)}
-          className={`flex items-center gap-2 px-4 py-2 rounded text-white ${
-            showForm
-              ? "bg-red-500 hover:bg-red-600"
-              : "bg-blue-500 hover:bg-blue-600"
-          }`}
+          onClick={handleAddEventClick}
+          className="flex items-center gap-2 px-4 py-2 rounded text-white bg-blue-500 hover:bg-blue-600"
         >
-          {showForm ? <XCircle size={20} /> : <PlusCircle size={20} />}
-          {showForm ? "Close Entry" : "New Entry"}
+          <PlusCircle size={20} />
+          New Entry
         </button>
       </div>
 
@@ -205,19 +225,32 @@ const CalendarApp = () => {
                   setNewEvent({ ...newEvent, description: e.target.value })
                 }
               />
-              <button
-                onClick={handleAddEvent}
-                className="bg-green-500 px-4 py-2 rounded hover:bg-green-600"
-              >
-                Add Event
-              </button>
+              <div className="flex gap-2">
+                <button
+                  className="bg-green-500 px-4 py-2 rounded hover:bg-green-600"
+                  onClick={handleSaveEvent}
+                >
+                  {editingEvent ? "Save Event" : "Add Event"}
+                </button>
+                <button
+                  className="bg-red-500 px-4 py-2 rounded hover:bg-red-600"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           )}
+
           {events.filter((event) => event.date === selectedDate).length > 0 ? (
             events
               .filter((event) => event.date === selectedDate)
               .map((event, index) => (
-                <div key={index} className="p-4 mb-4 bg-gray-800 rounded">
+                <div
+                  key={index}
+                  className="p-4 mb-4 bg-gray-800 rounded cursor-pointer"
+                  onClick={() => handleEditClick(event)} // Click to edit
+                >
                   <h3 className="text-lg font-bold">{event.title}</h3>
                   <p className="text-gray-400">{event.description}</p>
                 </div>
