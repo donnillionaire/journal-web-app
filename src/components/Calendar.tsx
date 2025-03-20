@@ -198,7 +198,7 @@ const CalendarApp = () => {
                 }
               />
               <textarea
-                className="w-full p-2 mb-2 bg-gray-700 rounded text-white"
+                className="w-full p-2 mb-2 bg-gray-700 rounded text-white h-50"
                 placeholder="Event Description"
                 value={newEvent.description}
                 onChange={(e) =>
