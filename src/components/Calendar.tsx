@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import dayjs from "dayjs";
-import { Menu, X } from "lucide-react";
+import { Menu, PlusCircle, X, XCircle } from "lucide-react";
 
 const CalendarApp = () => {
   const currentYear = dayjs().year();
@@ -98,12 +98,13 @@ const CalendarApp = () => {
         <h1 className="text-xl font-bold">Journal App</h1>
         <button
           onClick={() => setShowForm((prev) => !prev)}
-          className={`px-4 py-2 rounded text-white ${
+          className={`flex items-center gap-2 px-4 py-2 rounded text-white ${
             showForm
               ? "bg-red-500 hover:bg-red-600"
               : "bg-blue-500 hover:bg-blue-600"
           }`}
         >
+          {showForm ? <XCircle size={20} /> : <PlusCircle size={20} />}
           {showForm ? "Close Entry" : "New Entry"}
         </button>
       </div>
