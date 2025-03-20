@@ -98,7 +98,11 @@ const CalendarApp = () => {
         <h1 className="text-xl font-bold">Journal App</h1>
         <button
           onClick={() => setShowForm((prev) => !prev)}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+          className={`px-4 py-2 rounded text-white ${
+            showForm
+              ? "bg-red-500 hover:bg-red-600"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
         >
           {showForm ? "Close Entry" : "New Entry"}
         </button>
