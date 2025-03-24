@@ -4,10 +4,22 @@ import { Menu, PlusCircle, X, XCircle } from "lucide-react";
 
 const CalendarApp = () => {
   const currentYear = dayjs().year();
-  const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
-  const [events, setEvents] = useState<{ date: string; title: string; description: string }[]>([
-    { date: "2025-03-19", title: "Sad Day", description: "Today has been a rough day." },
-    { date: "2025-03-20", title: "Meeting", description: "Project sync-up at 10 AM." },
+  const [selectedDate, setSelectedDate] = useState(
+    dayjs().format("YYYY-MM-DD")
+  );
+  const [events, setEvents] = useState<
+    { date: string; title: string; description: string }[]
+  >([
+    {
+      date: "2025-03-19",
+      title: "Sad Day",
+      description: "Today has been a rough day.",
+    },
+    {
+      date: "2025-03-20",
+      title: "Meeting",
+      description: "Project sync-up at 10 AM.",
+    },
   ]);
   const [showForm, setShowForm] = useState(false);
   const [newEvent, setNewEvent] = useState({ title: "", description: "" });
@@ -20,7 +32,11 @@ const CalendarApp = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   // State for tracking the event being edited
-  const [editingEvent, setEditingEvent] = useState<{ date: string; title: string; description: string } | null>(null);
+  const [editingEvent, setEditingEvent] = useState<{
+    date: string;
+    title: string;
+    description: string;
+  } | null>(null);
 
   // Handle opening the form for adding a new event
   const handleAddEventClick = () => {
@@ -30,7 +46,11 @@ const CalendarApp = () => {
   };
 
   // Handle opening the form for editing an event
-  const handleEditClick = (event: { date: string; title: string; description: string }) => {
+  const handleEditClick = (event: {
+    date: string;
+    title: string;
+    description: string;
+  }) => {
     setEditingEvent(event); // Set the event to be edited
     setNewEvent({ title: event.title, description: event.description }); // Populate form fields
     setShowForm(true);
@@ -45,7 +65,11 @@ const CalendarApp = () => {
       setEvents((prevEvents) =>
         prevEvents.map((ev) =>
           ev.date === editingEvent.date && ev.title === editingEvent.title
-            ? { ...ev, title: newEvent.title, description: newEvent.description }
+            ? {
+                ...ev,
+                title: newEvent.title,
+                description: newEvent.description,
+              }
             : ev
         )
       );
@@ -119,7 +143,7 @@ const CalendarApp = () => {
     <div className="flex flex-col h-screen bg-gray-900 text-white">
       {/* Top Menu Bar */}
       <div className="flex justify-between items-center p-4 bg-gray-800 shadow-md">
-        <h1 className="text-xl font-bold">Journal App</h1>
+        <h1 className="text-xl font-bold mx-15">Journal App</h1>
         <button
           onClick={handleAddEventClick}
           className="flex items-center gap-2 px-4 py-2 rounded text-white bg-blue-500 hover:bg-blue-600"
@@ -217,6 +241,21 @@ const CalendarApp = () => {
                   setNewEvent({ ...newEvent, title: e.target.value })
                 }
               />
+
+              {/* <select
+                className="w-full p-2 border rounded bg-gray-700 text-white"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+              >
+                <option value="">Select Category</option>
+                <option value="Personal">Personal</option>
+                <option value="Work">Work & Productivity</option>
+                <option value="Health">Health & Wellness</option>
+                <option value="Social">Social & Relationships</option>
+                <option value="Hobbies">Hobbies & Interests</option>
+                <option value="Financial">Financial</option>
+                <option value="Spiritual">Spiritual & Mindfulness</option>
+              </select> */}
               <textarea
                 className="w-full p-2 mb-2 bg-gray-700 rounded text-white h-50"
                 placeholder="Event Description"
