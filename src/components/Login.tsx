@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import dayjs from "dayjs";
 import { Menu, PlusCircle, X, XCircle } from "lucide-react";
 
-const CalendarApp = () => {
+const LoginPage = () => {
   const currentYear = dayjs().year();
   const [selectedDate, setSelectedDate] = useState(
     dayjs().format("YYYY-MM-DD")
@@ -140,9 +140,9 @@ const CalendarApp = () => {
   }, [months, loadPreviousMonth, loadNextMonth]);
 
   return (
-    <div className="flex flex-col h-screen bg-gray-800 text-white">
+    <div className="flex flex-col h-screen bg-gray-900 text-white">
       {/* Top Menu Bar */}
-      <div className="flex justify-between items-center p-4 bg-gray shadow-md">
+      <div className="flex justify-between items-center p-4 bg-gray-800 shadow-md">
         <h1 className="text-xl font-bold mx-15">Journal App</h1>
         <button
           onClick={handleAddEventClick}
@@ -153,7 +153,7 @@ const CalendarApp = () => {
         </button>
       </div>
 
-      <div className="flex h-screen bg-white text-white shadow-xl">
+      <div className="flex h-screen bg-gray-900 text-white shadow-xl">
         {/* Collapsible Sidebar */}
         <div
           className={`bg-gray-800 p-3 transition-all duration-300 ${
@@ -189,7 +189,7 @@ const CalendarApp = () => {
                     : undefined
                 }
               >
-                <h3 className="px-[200px] text-lg font-bold mb-2 text-gray-300">
+                <h3 className="text-lg font-bold mb-2">
                   {month.format("MMMM YYYY")}
                 </h3>
                 <div className="grid grid-cols-7 gap-2">
@@ -208,10 +208,10 @@ const CalendarApp = () => {
                   ).map((day) => (
                     <button
                       key={day.format("YYYY-MM-DD")}
-                      className={`p-2 text-center rounded text-gray-700 transition duration-200 ${
+                      className={`p-2 text-center rounded ${
                         selectedDate === day.format("YYYY-MM-DD")
-                          ? "bg-blue-500 text-white"
-                          : "hover:bg-gray-200"
+                          ? "bg-blue-500"
+                          : "hover:bg-gray-700"
                       }`}
                       onClick={() => setSelectedDate(day.format("YYYY-MM-DD"))}
                     >
@@ -226,15 +226,15 @@ const CalendarApp = () => {
 
         {/* Events Panel */}
         <div className="w-3/5 p-5">
-          <h2 className="text-xl font-semibold mb-4 text-gray-500">
-            Entries on {dayjs(selectedDate).format("MMMM D, YYYY")}
+          <h2 className="text-xl font-semibold mb-4">
+            Events on {dayjs(selectedDate).format("MMMM D, YYYY")}
           </h2>
 
           {showForm && (
-            <div className="p-4 bg-gray-100 rounded mb-4">
+            <div className="p-4 bg-gray-800 rounded mb-4">
               <input
                 type="text"
-                className="w-full p-2 mb-2 bg-gray-300 rounded text-black"
+                className="w-full p-2 mb-2 bg-gray-700 rounded text-white"
                 placeholder="Event Title"
                 value={newEvent.title}
                 onChange={(e) =>
@@ -257,7 +257,7 @@ const CalendarApp = () => {
                 <option value="Spiritual">Spiritual & Mindfulness</option>
               </select> */}
               <textarea
-                className="w-full p-2 mb-2 bg-gray-300 rounded text-black h-50"
+                className="w-full p-2 mb-2 bg-gray-700 rounded text-white h-50"
                 placeholder="Event Description"
                 value={newEvent.description}
                 onChange={(e) =>
@@ -287,16 +287,11 @@ const CalendarApp = () => {
               .map((event, index) => (
                 <div
                   key={index}
-                  className="p-6 mb-4 bg-gray-700 rounded-2xl cursor-pointer shadow-md hover:bg-gray-600 transition"
+                  className="p-4 mb-4 bg-gray-800 rounded cursor-pointer"
                   onClick={() => handleEditClick(event)} // Click to edit
                 >
-                  <h3 className="text-lg font-bold text-white">
-                    {event.title}
-                  </h3>
+                  <h3 className="text-lg font-bold">{event.title}</h3>
                   <p className="text-gray-400">{event.description}</p>
-                  <p className="text-sm text-gray-500 mt-2">
-                    3/20/2025, 10:00:00 AM
-                  </p>
                 </div>
               ))
           ) : (
@@ -308,4 +303,4 @@ const CalendarApp = () => {
   );
 };
 
-export default CalendarApp;
+export default LoginPage;
