@@ -35,7 +35,7 @@ const SignupPage: React.FC = () => {
 
     try {
       const response = await apiClient.post<{ token: string }>(
-        API.authAPI.signup,
+        API.authAPI.registerUser,
         formData
       );
       console.log("Signup Successful:", response.data);
@@ -43,8 +43,13 @@ const SignupPage: React.FC = () => {
       alert("Signup Successful!");
       navigate("/dashboard");
     } catch (err: any) {
-      console.error("Signup Error:", err.response?.data?.message || err.message);
-      setError(err.response?.data?.message || "Signup failed. Please try again.");
+      console.error(
+        "Signup Error:",
+        err.response?.data?.message || err.message
+      );
+      setError(
+        err.response?.data?.message || "Signup failed. Please try again."
+      );
     } finally {
       setLoading(false);
     }

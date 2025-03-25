@@ -9,7 +9,7 @@ import LoginPage from "./pages/Login";
 import SignupPage from "./pages/SignUp";
 
 function App() {
-  const [count, setCount] = useState(0);
+  // const [count, setCount] = useState(0);
 
   return (
     <>
@@ -18,8 +18,8 @@ function App() {
       <HashRouter>
         <Routes>
           <Route index element={<LoginPage />} />
-
-          <Route path="/cal" element={<CalendarApp />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/calendar" element={<CalendarApp />} />
         </Routes>
       </HashRouter>
     </>
