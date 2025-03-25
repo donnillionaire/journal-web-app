@@ -6,6 +6,7 @@ import CalendarApp from "./components/Calendar";
 import Button from "@mui/material/Button";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/Login";
+import SignupPage from "./pages/SignUp";
 
 function App() {
   const [count, setCount] = useState(0);
