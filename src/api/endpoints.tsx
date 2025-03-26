@@ -12,6 +12,7 @@ interface JournalAPI {
   createJournal: string;
   getJournals: string;
   getJournalByID: (id: string | number) => string;
+  getJournalsByDate: (date: string) => string;
 }
 
 const authAPI: AuthAPI = {
@@ -24,6 +25,7 @@ const journalAPI: JournalAPI = {
   createJournal: `${BASE_URL}${journalsURL}`,
   getJournals: `${BASE_URL}${journalsURL}`,
   getJournalByID: (id) => `${BASE_URL}${journalsURL}/${id}`, // ID now type-checked
+  getJournalsByDate: (date)=> `${BASE_URL}${journalsURL}/${date}`
 };
 
 const API = { authAPI, journalAPI };
