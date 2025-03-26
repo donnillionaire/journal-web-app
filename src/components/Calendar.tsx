@@ -120,6 +120,19 @@ const CalendarApp = () => {
     }
   };
 
+
+
+  const handleLogout = () => {
+    // Clear the token from localStorage
+    localStorage.removeItem("token");
+  
+    // Optional: Clear any other user-related data
+    // localStorage.removeItem("user");
+  
+    // Redirect to the login page
+    navigate("/login");
+  };
+
   // Fetch entries for the entire year
   const fetchEntriesForYear = async () => {
     try {
@@ -302,7 +315,7 @@ const CalendarApp = () => {
         autoHideDuration={4000}
         Errmsg={errorMsg}
       />
-      <div className="flex flex-col h-screen bg-gray-800 text-white">
+      <div className="flex flex-col h-screen bg-gray-900 text-white">
         {/* Top Menu Bar */}
         <div className="flex justify-between items-center p-4 bg-gray shadow-md">
           <h1 className="text-xl font-bold mx-15">Journal App</h1>
@@ -321,7 +334,20 @@ const CalendarApp = () => {
               sidebarOpen ? "w-56" : "w-0"
             }`}
           >
-            {sidebarOpen && <p className="text-gray-300">Sidebar Content</p>}
+            {sidebarOpen && (
+              <>
+                <p className="text-gray-300">More Options</p>
+                {/* Spacer to push the logout button to the bottom */}
+                <div className="flex-grow"></div>
+                {/* Logout Button */}
+                <button
+                  className="w-full py-2 mt-[100px] text-white bg-red-500 hover:bg-red-600 transition rounded"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+              </>
+            )}
           </div>
           {/* Sidebar Toggle Button */}
           <button
