@@ -8,7 +8,9 @@ import GeneralError from "./Alerts/Error";
 
 const CalendarApp = () => {
   const currentYear = dayjs().year();
-  const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
+  const [selectedDate, setSelectedDate] = useState(
+    dayjs().format("YYYY-MM-DD")
+  );
   const [events, setEvents] = useState<
     { date: string; title: string; description: string; category: string }[]
   >([]);
@@ -54,7 +56,8 @@ const CalendarApp = () => {
       setEvents(formattedEvents); // Update events state
     } catch (err: any) {
       console.error("Error fetching journal entries:", err);
-      const error_text = err.response?.data?.detail || "An unexpected error occurred.";
+      const error_text =
+        err.response?.data?.detail || "An unexpected error occurred.";
       if (error_text === "Token expired") {
         console.log("Token has expired, redirecting to login screen...");
         setErrorAlert(true);
@@ -96,7 +99,11 @@ const CalendarApp = () => {
     category: string;
   }) => {
     setEditingEvent(event); // Set the event to be edited
-    setNewEvent({ title: event.title, description: event.description, category: event.category }); // Populate form fields
+    setNewEvent({
+      title: event.title,
+      description: event.description,
+      category: event.category,
+    }); // Populate form fields
     setShowForm(true);
   };
 
@@ -133,8 +140,7 @@ const CalendarApp = () => {
         // Call the backend to create the journal entry//err: any
         const createdEntry = await createJournal(requestData);
 
-        console.log("created entry", createdEntry)
-
+        console.log("created entry", createdEntry);
 
         // Add the new entry to the local state
         setEvents([
@@ -314,9 +320,11 @@ const CalendarApp = () => {
             </div>
           </div>
           {/* Events Panel */}
-          <div className="w-3/5 p-5">
-
-          {showForm && (
+          <div
+            className="w-3/5 p-5 overflow-y-auto"
+            style={{ maxHeight: "calc(100vh - 100px)" }}
+          >
+            {showForm && (
               <div className="p-4 bg-gray-100 rounded mb-4">
                 <select
                   className="w-full p-2 mb-2 bg-gray-300 rounded text-black"
@@ -394,7 +402,6 @@ const CalendarApp = () => {
             ) : (
               <p className="text-gray-500">No entries for this day.</p>
             )}
-         
           </div>
         </div>
       </div>
