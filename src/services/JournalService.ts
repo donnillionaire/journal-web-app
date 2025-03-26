@@ -92,3 +92,15 @@ export const getJournalsByYear = async (
       throw error; // Re-throw the error for handling in the component
     }
   };
+
+
+
+  export const deleteJournal = async (journalId: string): Promise<void> => {
+    try {
+      await apiClient.delete(API.journalAPI.deleteJournalByID(journalId)); // Use API endpoint function
+    } catch (error) {
+      console.error("Error deleting journal:", error);
+      throw error; // Re-throw for handling in the component
+    }
+  };
+  

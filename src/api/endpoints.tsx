@@ -13,8 +13,9 @@ interface JournalAPI {
   getJournals: string;
   getJournalByID: (id: string | number) => string;
   getJournalsByDate: (date: string) => string;
-  updateJournalEntryByID : (date: string) => string;
+  updateJournalEntryByID: (date: string) => string;
   getJournalsByYear: (year: string) => string;
+  deleteJournalByID: (id: string | number) => string;
 }
 
 const authAPI: AuthAPI = {
@@ -27,13 +28,14 @@ const journalAPI: JournalAPI = {
   createJournal: `${BASE_URL}${journalsURL}`,
   getJournals: `${BASE_URL}${journalsURL}`,
   getJournalByID: (id) => `${BASE_URL}${journalsURL}/${id}`, // ID now type-checked
-  getJournalsByDate: (date)=> `${BASE_URL}${journalsURL}/by-date/${date}`,
+  getJournalsByDate: (date) => `${BASE_URL}${journalsURL}/by-date/${date}`,
   updateJournalEntryByID: (id) => `${BASE_URL}${journalsURL}/${id}`, // ID now type-checked
-  getJournalsByYear: (year)=> `${BASE_URL}${journalsURL}?year=${year}`,
+  getJournalsByYear: (year) => `${BASE_URL}${journalsURL}?year=${year}`,
+  deleteJournalByID: (id) => `${BASE_URL}${journalsURL}/${id}`,
 
- /// /journals?year=${year}
+  /// /journals?year=${year}
 };
- 
+
 const API = { authAPI, journalAPI };
 
 export default API;
