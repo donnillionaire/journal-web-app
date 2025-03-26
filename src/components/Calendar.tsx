@@ -11,6 +11,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import GeneralSuccess from "./Alerts/Success";
 import GeneralError from "./Alerts/Error";
+import { LinearProgress } from "@mui/material";
 
 const CalendarApp = () => {
   const currentYear = dayjs().year();
@@ -287,6 +288,8 @@ const CalendarApp = () => {
 
   return (
     <>
+      {loading && <LinearProgress />}
+
       <GeneralSuccess
         open={successAlert}
         onClose={() => setSuccessAlert(false)}

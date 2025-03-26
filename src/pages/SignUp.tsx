@@ -7,6 +7,7 @@ import {
   Button,
   IconButton,
   InputAdornment,
+  LinearProgress,
   TextField,
   Typography,
 } from "@mui/material";
@@ -72,6 +73,8 @@ const SignupPage: React.FC = () => {
 
   return (
     <>
+      {loading && <LinearProgress />}
+
       <GeneralSuccess
         open={successAlert}
         onClose={() => setSuccessAlert(false)}

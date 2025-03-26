@@ -7,6 +7,7 @@ import {
   Button,
   IconButton,
   InputAdornment,
+  LinearProgress,
   TextField,
   Typography,
 } from "@mui/material";
@@ -43,7 +44,7 @@ const LoginPage: React.FC = () => {
         token_type: string;
       }>(API.authAPI.login, { email, password });
 
-      console.log("response",response.data.access_token)
+      console.log("response", response.data.access_token);
       localStorage.setItem("token", response.data.access_token);
       setSuccessAlert(true);
       setSuccessMsg("Login Successfully!");
@@ -63,6 +64,8 @@ const LoginPage: React.FC = () => {
 
   return (
     <>
+      {loading && <LinearProgress />}
+
       <GeneralSuccess
         open={successAlert}
         onClose={() => setSuccessAlert(false)}
