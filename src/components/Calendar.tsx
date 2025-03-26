@@ -310,17 +310,19 @@
 
 // export default CalendarApp;
 
-
-
-
 import { useState, useEffect, useRef, useCallback } from "react";
 import dayjs from "dayjs";
 import { Menu, PlusCircle, X, XCircle } from "lucide-react";
 import { getJournalsByDate } from "../services/JournalService"; // Import the service function
+import { useNavigate } from "react-router-dom";
+import GeneralSuccess from "./Alerts/Success";
+import GeneralError from "./Alerts/Error";
 
 const CalendarApp = () => {
   const currentYear = dayjs().year();
-  const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
+  const [selectedDate, setSelectedDate] = useState(
+    dayjs().format("YYYY-MM-DD")
+  );
   const [events, setEvents] = useState<
     { date: string; title: string; description: string }[]
   >([]);
@@ -341,6 +343,14 @@ const CalendarApp = () => {
   const [loading, setLoading] = useState(false); // Add loading state
   const [error, setError] = useState<string | null>(null); // Add error state
 
+  const [successAlert, setSuccessAlert] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
+  const [errorAlert, setErrorAlert] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const navigate = useNavigate();
+
+  // Fetch entries for the selected date
   // Fetch events for the selected date
   const fetchEvents = async (date: string) => {
     setLoading(true);
@@ -355,13 +365,33 @@ const CalendarApp = () => {
       }));
       setEvents(formattedEvents); // Update events state
     } catch (err) {
-      console.log("err", err)
-      setError("Failed to fetch journal entries.");
+      console.log("err", err.response.data.detail);
+
+      const error_text = err.response.data.detail;
+
+      if (error_text === "Token expired") {
+        console.log("Token has expired, redirect to login screeen!");
+      
+
+      // setError("Failed to fetch journal entries.");
+
+      setErrorAlert(true);
+      setErrorMsg(
+        err.response.data.detail + " " + "Redirecting to login page..."
+      );
+
+      localStorage.removeItem("token"); // Clear the expired token
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000); // 2-second delay before redirecting
+
+
+    }
     } finally {
       setLoading(false);
     }
   };
-
   // Fetch events when the component mounts
   useEffect(() => {
     fetchEvents(selectedDate); // Fetch entries for the current date
@@ -467,154 +497,173 @@ const CalendarApp = () => {
   }, [months, loadPreviousMonth, loadNextMonth]);
 
   return (
-    <div className="flex flex-col h-screen bg-gray-800 text-white">
-      {/* Top Menu Bar */}
-      <div className="flex justify-between items-center p-4 bg-gray shadow-md">
-        <h1 className="text-xl font-bold mx-15">Journal App</h1>
-        <button
-          onClick={handleAddEventClick}
-          className="flex items-center gap-2 px-4 py-2 rounded text-white bg-blue-500 hover:bg-blue-600"
-        >
-          <PlusCircle size={20} />
-          New Entry
-        </button>
-      </div>
-      <div className="flex h-screen bg-white text-white shadow-xl">
-        {/* Collapsible Sidebar */}
-        <div
-          className={`bg-gray-800 p-3 transition-all duration-300 ${
-            sidebarOpen ? "w-56" : "w-0"
-          }`}
-        >
-          {sidebarOpen && <p className="text-gray-300">Sidebar Content</p>}
+    <>
+      <GeneralSuccess
+        open={successAlert}
+        onClose={() => setSuccessAlert(false)}
+        autoHideDuration={4000}
+        msg={successMsg}
+      />
+
+      <GeneralError
+        open={errorAlert}
+        onClose={() => setErrorAlert(false)}
+        autoHideDuration={4000}
+        Errmsg={errorMsg}
+      />
+
+      <div className="flex flex-col h-screen bg-gray-800 text-white">
+        {/* Top Menu Bar */}
+        <div className="flex justify-between items-center p-4 bg-gray shadow-md">
+          <h1 className="text-xl font-bold mx-15">Journal App</h1>
+          <button
+            onClick={handleAddEventClick}
+            className="flex items-center gap-2 px-4 py-2 rounded text-white bg-blue-500 hover:bg-blue-600"
+          >
+            <PlusCircle size={20} />
+            New Entry
+          </button>
         </div>
-        {/* Sidebar Toggle Button */}
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="absolute top-4 left-4 bg-gray-700 p-2 rounded-full"
-        >
-          {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
-        {/* Calendar */}
-        <div
-          className="w-2/5 p-5 border-r border-gray-700 overflow-y-auto"
-          ref={containerRef}
-        >
-          <h2 className="text-xl font-semibold mb-4">Calendar</h2>
-          <div className="space-y-6">
-            {months.map((month, index) => (
-              <div
-                key={month.format("YYYY-MM")}
-                id={
-                  index === 0
-                    ? "top-month"
-                    : index === months.length - 1
-                    ? "bottom-month"
-                    : undefined
-                }
-              >
-                <h3 className="px-[200px] text-lg font-bold mb-2 text-gray-300">
-                  {month.format("MMMM YYYY")}
-                </h3>
-                <div className="grid grid-cols-7 gap-2">
-                  {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
-                    (day) => (
-                      <div
-                        key={day}
-                        className="text-center font-bold text-gray-400"
+        <div className="flex h-screen bg-white text-white shadow-xl">
+          {/* Collapsible Sidebar */}
+          <div
+            className={`bg-gray-800 p-3 transition-all duration-300 ${
+              sidebarOpen ? "w-56" : "w-0"
+            }`}
+          >
+            {sidebarOpen && <p className="text-gray-300">Sidebar Content</p>}
+          </div>
+          {/* Sidebar Toggle Button */}
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="absolute top-4 left-4 bg-gray-700 p-2 rounded-full"
+          >
+            {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+          {/* Calendar */}
+          <div
+            className="w-2/5 p-5 border-r border-gray-700 overflow-y-auto"
+            ref={containerRef}
+          >
+            <h2 className="text-xl font-semibold mb-4">Calendar</h2>
+            <div className="space-y-6">
+              {months.map((month, index) => (
+                <div
+                  key={month.format("YYYY-MM")}
+                  id={
+                    index === 0
+                      ? "top-month"
+                      : index === months.length - 1
+                      ? "bottom-month"
+                      : undefined
+                  }
+                >
+                  <h3 className="px-[200px] text-lg font-bold mb-2 text-gray-300">
+                    {month.format("MMMM YYYY")}
+                  </h3>
+                  <div className="grid grid-cols-7 gap-2">
+                    {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
+                      (day) => (
+                        <div
+                          key={day}
+                          className="text-center font-bold text-gray-400"
+                        >
+                          {day}
+                        </div>
+                      )
+                    )}
+                    {Array.from({ length: month.daysInMonth() }, (_, i) =>
+                      month.startOf("month").add(i, "day")
+                    ).map((day) => (
+                      <button
+                        key={day.format("YYYY-MM-DD")}
+                        className={`p-2 text-center rounded text-gray-700 transition duration-200 ${
+                          selectedDate === day.format("YYYY-MM-DD")
+                            ? "bg-blue-500 text-white"
+                            : "hover:bg-gray-200"
+                        }`}
+                        onClick={() =>
+                          setSelectedDate(day.format("YYYY-MM-DD"))
+                        }
                       >
-                        {day}
-                      </div>
-                    )
-                  )}
-                  {Array.from({ length: month.daysInMonth() }, (_, i) =>
-                    month.startOf("month").add(i, "day")
-                  ).map((day) => (
-                    <button
-                      key={day.format("YYYY-MM-DD")}
-                      className={`p-2 text-center rounded text-gray-700 transition duration-200 ${
-                        selectedDate === day.format("YYYY-MM-DD")
-                          ? "bg-blue-500 text-white"
-                          : "hover:bg-gray-200"
-                      }`}
-                      onClick={() => setSelectedDate(day.format("YYYY-MM-DD"))}
-                    >
-                      {day.format("D")}
-                    </button>
-                  ))}
+                        {day.format("D")}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* Events Panel */}
+          <div className="w-3/5 p-5">
+            <h2 className="text-xl font-semibold mb-4 text-gray-500">
+              Entries on {dayjs(selectedDate).format("MMMM D, YYYY")}
+            </h2>
+            {loading ? (
+              <p className="text-gray-500">Loading entries...</p>
+            ) : error ? (
+              <p className="text-red-500">{error}</p>
+            ) : events.filter((event) => event.date === selectedDate).length >
+              0 ? (
+              events
+                .filter((event) => event.date === selectedDate)
+                .map((event, index) => (
+                  <div
+                    key={index}
+                    className="p-6 mb-4 bg-gray-700 rounded-2xl cursor-pointer shadow-md hover:bg-gray-600 transition"
+                    onClick={() => handleEditClick(event)} // Click to edit
+                  >
+                    <h3 className="text-lg font-bold text-white">
+                      {event.title}
+                    </h3>
+                    <p className="text-gray-400">{event.description}</p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      {dayjs(event.date).format("MM/DD/YYYY")}
+                    </p>
+                  </div>
+                ))
+            ) : (
+              <p className="text-gray-500">No entries for this day.</p>
+            )}
+            {showForm && (
+              <div className="p-4 bg-gray-100 rounded mb-4">
+                <input
+                  type="text"
+                  className="w-full p-2 mb-2 bg-gray-300 rounded text-black"
+                  placeholder="Event Title"
+                  value={newEvent.title}
+                  onChange={(e) =>
+                    setNewEvent({ ...newEvent, title: e.target.value })
+                  }
+                />
+                <textarea
+                  className="w-full p-2 mb-2 bg-gray-300 rounded text-black h-50"
+                  placeholder="Event Description"
+                  value={newEvent.description}
+                  onChange={(e) =>
+                    setNewEvent({ ...newEvent, description: e.target.value })
+                  }
+                />
+                <div className="flex gap-2">
+                  <button
+                    className="bg-green-500 px-4 py-2 rounded hover:bg-green-600"
+                    onClick={handleSaveEvent}
+                  >
+                    {editingEvent ? "Save Event" : "Add Event"}
+                  </button>
+                  <button
+                    className="bg-red-500 px-4 py-2 rounded hover:bg-red-600"
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </button>
                 </div>
               </div>
-            ))}
+            )}
           </div>
         </div>
-        {/* Events Panel */}
-        <div className="w-3/5 p-5">
-          <h2 className="text-xl font-semibold mb-4 text-gray-500">
-            Entries on {dayjs(selectedDate).format("MMMM D, YYYY")}
-          </h2>
-          {loading ? (
-            <p className="text-gray-500">Loading entries...</p>
-          ) : error ? (
-            <p className="text-red-500">{error}</p>
-          ) : events.filter((event) => event.date === selectedDate).length > 0 ? (
-            events
-              .filter((event) => event.date === selectedDate)
-              .map((event, index) => (
-                <div
-                  key={index}
-                  className="p-6 mb-4 bg-gray-700 rounded-2xl cursor-pointer shadow-md hover:bg-gray-600 transition"
-                  onClick={() => handleEditClick(event)} // Click to edit
-                >
-                  <h3 className="text-lg font-bold text-white">
-                    {event.title}
-                  </h3>
-                  <p className="text-gray-400">{event.description}</p>
-                  <p className="text-sm text-gray-500 mt-2">
-                    {dayjs(event.date).format("MM/DD/YYYY")}
-                  </p>
-                </div>
-              ))
-          ) : (
-            <p className="text-gray-500">No entries for this day.</p>
-          )}
-          {showForm && (
-            <div className="p-4 bg-gray-100 rounded mb-4">
-              <input
-                type="text"
-                className="w-full p-2 mb-2 bg-gray-300 rounded text-black"
-                placeholder="Event Title"
-                value={newEvent.title}
-                onChange={(e) =>
-                  setNewEvent({ ...newEvent, title: e.target.value })
-                }
-              />
-              <textarea
-                className="w-full p-2 mb-2 bg-gray-300 rounded text-black h-50"
-                placeholder="Event Description"
-                value={newEvent.description}
-                onChange={(e) =>
-                  setNewEvent({ ...newEvent, description: e.target.value })
-                }
-              />
-              <div className="flex gap-2">
-                <button
-                  className="bg-green-500 px-4 py-2 rounded hover:bg-green-600"
-                  onClick={handleSaveEvent}
-                >
-                  {editingEvent ? "Save Event" : "Add Event"}
-                </button>
-                <button
-                  className="bg-red-500 px-4 py-2 rounded hover:bg-red-600"
-                  onClick={handleCancel}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
       </div>
-    </div>
+    </>
   );
 };
 
