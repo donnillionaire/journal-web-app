@@ -22,7 +22,7 @@ export interface JournalCreateRequest {
   title: string;
   body: string;
   journal_category?: string; // Optional category
-//   created_at?: string; // Optional, defaults to current date on the backend
+  //   created_at?: string; // Optional, defaults to current date on the backend
 }
 
 // Function to fetch journal entries by date
@@ -45,15 +45,30 @@ export const getJournalsByDate = async (
 export const createJournal = async (
   data: JournalCreateRequest
 ): Promise<any> => {
-
-    console.log("data", data)
+  console.log("data", data);
   try {
     const response = await apiClient.post(API.journalAPI.createJournal, data);
 
-    console.log("response:->", response.data.data)
+    console.log("response:->", response.data.data);
     return response.data.data; // Return the parsed response data
   } catch (error) {
     console.error("Error creating journal entry:", error);
+    throw error; // Re-throw the error for handling in the component
+  }
+};
+
+// Update an existing journal entry
+// Update an existing journal entry
+export const updateJournal = async (id: string, data: any) => {
+  try {
+    const response = await apiClient.put(
+      API.journalAPI.updateJournalEntryByID(id),
+      data
+    );
+   
+    return response.data.data; // Return the parsed response data
+  } catch (error) {
+    console.error("Error updating journal entry:", error);
     throw error; // Re-throw the error for handling in the component
   }
 };

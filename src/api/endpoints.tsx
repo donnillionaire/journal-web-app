@@ -13,6 +13,7 @@ interface JournalAPI {
   getJournals: string;
   getJournalByID: (id: string | number) => string;
   getJournalsByDate: (date: string) => string;
+  updateJournalEntryByID : (date: string) => string;
 }
 
 const authAPI: AuthAPI = {
@@ -25,9 +26,11 @@ const journalAPI: JournalAPI = {
   createJournal: `${BASE_URL}${journalsURL}`,
   getJournals: `${BASE_URL}${journalsURL}`,
   getJournalByID: (id) => `${BASE_URL}${journalsURL}/${id}`, // ID now type-checked
-  getJournalsByDate: (date)=> `${BASE_URL}${journalsURL}/by-date/${date}`
-};
+  getJournalsByDate: (date)=> `${BASE_URL}${journalsURL}/by-date/${date}`,
+  updateJournalEntryByID: (id) => `${BASE_URL}${journalsURL}/${id}`, // ID now type-checked
 
+};
+ 
 const API = { authAPI, journalAPI };
 
 export default API;

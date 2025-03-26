@@ -1,18 +1,27 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import dayjs from "dayjs";
 import { Menu, PlusCircle, X, XCircle } from "lucide-react";
-import { getJournalsByDate, createJournal } from "../services/JournalService"; // Import service functions
+import {
+  getJournalsByDate,
+  createJournal,
+  updateJournal,
+} from "../services/JournalService"; // Import service functions
 import { useNavigate } from "react-router-dom";
 import GeneralSuccess from "./Alerts/Success";
 import GeneralError from "./Alerts/Error";
 
 const CalendarApp = () => {
   const currentYear = dayjs().year();
-  const [selectedDate, setSelectedDate] = useState(
-    dayjs().format("YYYY-MM-DD")
-  );
+  const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [events, setEvents] = useState<
-    { date: string; title: string; description: string; category: string }[]
+    {
+      id: string;
+      date: string;
+      title: string;
+      description: string;
+      category: string;
+      journal_category: string;
+    }[]
   >([]);
   const [showForm, setShowForm] = useState(false);
   const [newEvent, setNewEvent] = useState({
@@ -28,6 +37,7 @@ const CalendarApp = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [editingEvent, setEditingEvent] = useState<{
+    id: string;
     date: string;
     title: string;
     description: string;
@@ -43,16 +53,22 @@ const CalendarApp = () => {
 
   // Fetch entries for the selected date
   const fetchEvents = async (date: string) => {
+    console.log("fetch events called...", date)
     setLoading(true);
     setError(null);
     try {
       const response = await getJournalsByDate(date); // Fetch data from the backend
+      console.log("response:->", response.data)
       const formattedEvents = response.data.map((entry: any) => ({
-        date: dayjs(entry.created_at).format("YYYY-MM-DD"), // Format date
+        date: dayjs(entry.date_of_entry).format("YYYY-MM-DD"), // Format date
         title: entry.title,
         description: entry.content,
-        category: entry.category || "Uncategorized", // Default to "Uncategorized" if no category exists
+        id: entry.id,
+        category: entry.journal_category || "Uncategorized", // Default to "Uncategorized" if no category exists
+        journal_category: entry.journal_category || "Uncategorized",
       }));
+
+      console.log("formatted events:->", formattedEvents)
       setEvents(formattedEvents); // Update events state
     } catch (err: any) {
       console.error("Error fetching journal entries:", err);
@@ -71,13 +87,14 @@ const CalendarApp = () => {
       }
     } finally {
       setLoading(false);
+      console.log('finally:!')
     }
   };
 
-  // Fetch events when the component mounts
-  useEffect(() => {
-    fetchEvents(selectedDate); // Fetch entries for the current date
-  }, []); // Empty dependency array ensures this runs only once on mount
+  // // Fetch events when the component mounts
+  // useEffect(() => {
+  //   fetchEvents(selectedDate); // Fetch entries for the current date
+  // }, []); // Empty dependency array ensures this runs only once on mount
 
   // Fetch events when selectedDate changes
   useEffect(() => {
@@ -93,11 +110,13 @@ const CalendarApp = () => {
 
   // Handle opening the form for editing an event
   const handleEditClick = (event: {
+    id: string;
     date: string;
     title: string;
     description: string;
     category: string;
   }) => {
+    console.log("event", event);
     setEditingEvent(event); // Set the event to be edited
     setNewEvent({
       title: event.title,
@@ -110,12 +129,20 @@ const CalendarApp = () => {
   // Handle saving the event (either adding or editing)
   const handleSaveEvent = async () => {
     if (!newEvent.title.trim()) return;
-
     try {
       setLoading(true); // Show loading state
-
       if (editingEvent) {
-        // Editing an existing event (update logic here if needed)
+        // Editing an existing event
+        const requestData = {
+          title: newEvent.title,
+          content: newEvent.description,
+          journal_category: newEvent.category, // Include category
+        };
+        console.log("requestedData", requestData);
+        // Call the backend to update the journal entry
+        const updatedEntry = await updateJournal(editingEvent.id, requestData); // Assuming `id` is part of `editingEvent`
+        console.log("Updated entry:", updatedEntry);
+        // Update the local state with the updated event
         setEvents((prevEvents) =>
           prevEvents.map((ev) =>
             ev.date === editingEvent.date && ev.title === editingEvent.title
@@ -123,7 +150,7 @@ const CalendarApp = () => {
                   ...ev,
                   title: newEvent.title,
                   description: newEvent.description,
-                  category: newEvent.category, // Update category
+                  category: newEvent.category,
                 }
               : ev
           )
@@ -134,37 +161,34 @@ const CalendarApp = () => {
           title: newEvent.title,
           content: newEvent.description,
           journal_category: newEvent.category, // Include category
-          // created_at: selectedDate, // Use the selected date
+          date_of_entry: selectedDate,
         };
-
-        // Call the backend to create the journal entry//err: any
+        console.log("selected date", selectedDate);
+        // Call the backend to create the journal entry
         const createdEntry = await createJournal(requestData);
-
         console.log("created entry", createdEntry);
-
         // Add the new entry to the local state
         setEvents([
           ...events,
           {
+            id: createdEntry.id,
             date: dayjs(createdEntry.created_at).format("YYYY-MM-DD"),
             title: createdEntry.title,
             description: createdEntry.content,
             category: createdEntry.journal_category || "Uncategorized",
+            journal_category: createdEntry.journal_category || "Uncategorized",
           },
         ]);
       }
-
       // Reset form and exit edit/add mode
       setNewEvent({ title: "", description: "", category: "" });
       setEditingEvent(null);
       setShowForm(false);
-
       // Show success alert
       setSuccessAlert(true);
       setSuccessMsg("Journal entry saved successfully!");
     } catch (err: any) {
       console.error("Error saving journal entry:", err);
-
       // Show error alert
       setErrorAlert(true);
       setErrorMsg("Failed to save journal entry.");
@@ -307,9 +331,10 @@ const CalendarApp = () => {
                             ? "bg-blue-500 text-white"
                             : "hover:bg-gray-200"
                         }`}
-                        onClick={() =>
-                          setSelectedDate(day.format("YYYY-MM-DD"))
-                        }
+                        onClick={() => {
+                          setSelectedDate(day.format("YYYY-MM-DD"));
+                          // fetchEvents(day.format("YYYY-MM-DD"));
+                        }}
                       >
                         {day.format("D")}
                       </button>
@@ -377,7 +402,7 @@ const CalendarApp = () => {
               Entries on {dayjs(selectedDate).format("MMMM D, YYYY")}
             </h2>
             {loading ? (
-              <p className="text-gray-500">Loading entries...</p>
+              <p className="text-gray-500">Loading entries... {selectedDate}</p>
             ) : error ? (
               <p className="text-red-500">{error}</p>
             ) : events.filter((event) => event.date === selectedDate).length >
@@ -387,15 +412,15 @@ const CalendarApp = () => {
                 .map((event, index) => (
                   <div
                     key={index}
-                    className="p-6 mb-4 bg-gray-700 rounded-2xl cursor-pointer shadow-md hover:bg-gray-600 transition"
+                    className="p-6 mb-4 bg-gray-600 rounded-sm cursor-pointer shadow-md hover:bg-gray-800 transition"
                     onClick={() => handleEditClick(event)} // Click to edit
                   >
-                    <h3 className="text-lg font-bold text-white">
+                    <h3 className="text-xl font-bold text-white">
                       {event.title}
                     </h3>
                     <p className="text-gray-400">{event.description}</p>
-                    <p className="text-sm text-gray-500 mt-2">
-                      Category: {event.category || "Uncategorized"}
+                    <p className="text-sm text-gray-300 mt-2">
+                      Category: {event.journal_category || "Uncategorized"}
                     </p>
                   </div>
                 ))
