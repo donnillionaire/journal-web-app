@@ -72,3 +72,23 @@ export const updateJournal = async (id: string, data: any) => {
     throw error; // Re-throw the error for handling in the component
   }
 };
+
+
+
+
+
+
+
+export const getJournalsByYear = async (
+    year: string
+  ): Promise<JournalListResponse> => {
+    try {
+      const response = await apiClient.get<JournalListResponse>(
+        API.journalAPI.getJournalsByYear(year) // Use the endpoint function with the year parameter
+      );
+      return response.data; // Return the parsed response data
+    } catch (error) {
+      console.error("Error fetching journals by year:", error);
+      throw error; // Re-throw the error for handling in the component
+    }
+  };
