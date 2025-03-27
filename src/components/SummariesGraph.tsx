@@ -59,7 +59,7 @@ const SummariesGraph: React.FC<SummariesProps> = ({
 
   return (
     <div className="p-4 bg-gray-900 text-white">
-      <h2 className="text-xl font-bold mb-4">Summaries</h2>
+      <h2 className="text-4xl font-bold mb-4">Summaries</h2>
 
       {/* Pie Chart: Category Distribution */}
       <div className="mb-8">

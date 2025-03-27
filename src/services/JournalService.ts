@@ -60,6 +60,10 @@ export const createJournal = async (
 // Update an existing journal entry
 // Update an existing journal entry
 export const updateJournal = async (id: string, data: any) => {
+
+    console.log("id", id)
+
+    console.log("journal data", data)
   try {
     const response = await apiClient.put(
       API.journalAPI.updateJournalEntryByID(id),
@@ -117,3 +121,17 @@ export const getJournalsByYear = async (
       throw error; // Re-throw for handling in the component
     }
   };
+
+
+
+//get word frequency
+  export const getWordFrequency = async () => {
+    try {
+      const response = await apiClient.get(API.journalAPI.getWordFrequency);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching word frequency:", error);
+      throw error;
+    }
+  };
+  

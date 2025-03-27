@@ -8,7 +8,8 @@ import { HashRouter, Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/Login";
 import SignupPage from "./pages/SignUp";
 import SummariesPage from "./pages/Summaries";
-
+import WordCloudGraph from "./components/WordCloudGraph";
+import WordCloudComponent from "./components/WordCloud";
 function App() {
   // const [count, setCount] = useState(0);
 
@@ -23,6 +24,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/calendar" element={<CalendarApp />} />
           <Route path="/summaries" element={<SummariesPage />} />
+          <Route path="/word-cloud" element={<WordCloudComponent />} />
           
         </Routes>
       </HashRouter>

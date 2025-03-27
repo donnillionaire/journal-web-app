@@ -18,6 +18,7 @@ interface JournalAPI {
   deleteJournalByID: (id: string | number) => string;
   getJournalsByCategory: (category: string | number) => string;
   getSummaries: string;
+  getWordFrequency: string;
 }
 
 const authAPI: AuthAPI = {
@@ -36,6 +37,9 @@ const journalAPI: JournalAPI = {
   getJournalsByCategory: (category) =>
     `${BASE_URL}${journalsURL}by-category/${category}`,
   getSummaries: `${BASE_URL}${journalsURL}/summaries`,
+
+
+  getWordFrequency :`${BASE_URL}${journalsURL}/word-frequency`,
 
   deleteJournalByID: (id) => `${BASE_URL}${journalsURL}/${id}`,
 

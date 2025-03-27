@@ -1642,6 +1642,11 @@ jiti@*, jiti@^2.4.2, jiti@>=1.21.0:
   resolved "https://registry.npmjs.org/jiti/-/jiti-2.4.2.tgz"
   integrity sha512-rg9zJN+G4n2nfJl5MW3BMygZX56zKPNVEYYqq7adpmMh4Jn2QNEwhvQlFy6jPVdcod7txZtKHWnyZiA3a0zP7A==
 
+jquery@>=1.4:
+  version "3.7.1"
+  resolved "https://registry.npmjs.org/jquery/-/jquery-3.7.1.tgz"
+  integrity sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==
+
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/js-tokens/-/js-tokens-4.0.0.tgz"
@@ -2224,6 +2229,13 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.npmjs.org/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
+tagcloud@^1.1.0-1:
+  version "1.1.0-1"
+  resolved "https://registry.npmjs.org/tagcloud/-/tagcloud-1.1.0-1.tgz"
+  integrity sha512-9uLAhjXykfGnnJxGtFxTJkPGI578SgUkMfMXapvzUs9O+XtiK8P4eyFipaFX/WE887lCX2mEuzea2X3e9T2oaA==
+  dependencies:
+    jquery ">=1.4"
+
 tailwindcss@^4.0.14, tailwindcss@4.0.14:
   version "4.0.14"
   resolved "https://registry.npmjs.org/tailwindcss/-/tailwindcss-4.0.14.tgz"
@@ -2364,6 +2376,11 @@ word-wrap@^1.2.5:
   version "1.2.5"
   resolved "https://registry.npmjs.org/word-wrap/-/word-wrap-1.2.5.tgz"
   integrity sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==
+
+wordcloud@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.npmjs.org/wordcloud/-/wordcloud-1.2.3.tgz"
+  integrity sha512-9by77b7Sd9e1K75kSmVeAD+JnGpiLR1Z4EX1mYQL91jKrU1/4bHw4h4DExQ+dzfT+PvihDcH7OS7V4Y5UkbF2w==
 
 yallist@^3.0.2:
   version "3.1.1"
