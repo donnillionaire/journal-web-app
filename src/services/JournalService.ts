@@ -104,3 +104,16 @@ export const getJournalsByYear = async (
     }
   };
   
+
+
+
+//get summaries
+  export const getSummaries = async () => {
+    try {
+      const response = await apiClient.get(API.journalAPI.getSummaries);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching summaries:", error);
+      throw error; // Re-throw for handling in the component
+    }
+  };

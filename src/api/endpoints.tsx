@@ -17,6 +17,7 @@ interface JournalAPI {
   getJournalsByYear: (year: string) => string;
   deleteJournalByID: (id: string | number) => string;
   getJournalsByCategory: (category: string | number) => string;
+  getSummaries: string;
 }
 
 const authAPI: AuthAPI = {
@@ -34,6 +35,7 @@ const journalAPI: JournalAPI = {
   getJournalsByYear: (year) => `${BASE_URL}${journalsURL}?year=${year}`,
   getJournalsByCategory: (category) =>
     `${BASE_URL}${journalsURL}by-category/${category}`,
+  getSummaries: `${BASE_URL}${journalsURL}/summaries`,
 
   deleteJournalByID: (id) => `${BASE_URL}${journalsURL}/${id}`,
 

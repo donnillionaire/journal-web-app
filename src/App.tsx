@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/Login";
 import SignupPage from "./pages/SignUp";
+import SummariesPage from "./pages/Summaries";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -21,6 +22,8 @@ function App() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/calendar" element={<CalendarApp />} />
+          <Route path="/summaries" element={<SummariesPage />} />
+          
         </Routes>
       </HashRouter>
     </>
