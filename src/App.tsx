@@ -8,6 +8,7 @@ import LoginPage from "./pages/Login";
 import SignupPage from "./pages/SignUp";
 import SummariesPage from "./pages/Summaries";
 import WordCloudComponent from "./components/WordCloud";
+import UserTable from "./pages/AllUsers";
 function App() {
   // const [count, setCount] = useState(0);
 
@@ -23,6 +24,11 @@ function App() {
           <Route path="/calendar" element={<CalendarApp />} />
           <Route path="/summaries" element={<SummariesPage />} />
           <Route path="/word-cloud" element={<WordCloudComponent />} />
+
+          <Route path="/get-users" element={<UserTable />} />
+          
+
+        
           
         </Routes>
       </HashRouter>

@@ -1,11 +1,23 @@
 const BASE_URL = "http://localhost:8000";
 const journalsURL = "/api/journals";
 const authURL = "/auth/user";
+const adminURL = "/auth/admin";
+
 
 interface AuthAPI {
   registerUser: string;
   login: string;
   getUser: string;
+}
+
+
+
+
+interface AdminAPI {
+  registerAdmin: string;
+  login: string;
+  getAdmin: string;
+  getUsers: string
 }
 
 interface JournalAPI {
@@ -19,6 +31,7 @@ interface JournalAPI {
   getJournalsByCategory: (category: string | number) => string;
   getSummaries: string;
   getWordFrequency: string;
+ 
 }
 
 const authAPI: AuthAPI = {
@@ -26,6 +39,10 @@ const authAPI: AuthAPI = {
   login: `${BASE_URL}${authURL}/login`,
   getUser: `${BASE_URL}${authURL}/profile`,
 };
+
+
+
+
 
 const journalAPI: JournalAPI = {
   createJournal: `${BASE_URL}${journalsURL}`,
@@ -37,15 +54,20 @@ const journalAPI: JournalAPI = {
   getJournalsByCategory: (category) =>
     `${BASE_URL}${journalsURL}by-category/${category}`,
   getSummaries: `${BASE_URL}${journalsURL}/summaries`,
-
-
   getWordFrequency :`${BASE_URL}${journalsURL}/word-frequency`,
-
   deleteJournalByID: (id) => `${BASE_URL}${journalsURL}/${id}`,
 
-  /// /journals?year=${year}
 };
 
-const API = { authAPI, journalAPI };
+
+
+const adminAPI: AdminAPI = {
+  registerAdmin: `${BASE_URL}${adminURL}/register`,
+  login: `${BASE_URL}${adminURL}/login`,
+  getAdmin: `${BASE_URL}${adminURL}/profile`,
+  getUsers: `${BASE_URL}${adminURL}/all-users`,
+};
+
+const API = { authAPI, journalAPI, adminAPI };
 
 export default API;
