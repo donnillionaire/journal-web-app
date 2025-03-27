@@ -186,11 +186,11 @@ const LoginPage: React.FC = () => {
 
     try {
       const response = await apiClient.post<{
-        access_token: string;
-        token_type: string;
+        token: string;
+        role: string;
       }>(API.authAPI.login, { email, password });
 
-      sessionStorage.setItem("token", response.data.access_token);
+      sessionStorage.setItem("token", response.data.token);
       setSuccessAlert(true);
       setSuccessMsg("Login Successfully!");
       setTimeout(() => {
