@@ -56,7 +56,7 @@
 //         formData
 //       );
 //       console.log("Signup Successful:", response.data);
-//       localStorage.setItem("token", response.data.token);
+//       sessionStorage.setItem("token", response.data.token);
 
 //       setSuccessAlert(true);
 //       setSuccessMsg("Signup Successful!");
@@ -210,7 +210,7 @@ const SignupPage: React.FC = () => {
         API.authAPI.registerUser,
         formData
       );
-      localStorage.setItem("token", response.data.token);
+      sessionStorage.setItem("token", response.data.token);
       setSuccessAlert(true);
       setSuccessMsg("Signup Successful!");
       setTimeout(() => navigate("/login"), 2000);

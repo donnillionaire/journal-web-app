@@ -45,7 +45,7 @@
 //       }>(API.authAPI.login, { email, password });
 
 //       console.log("response", response.data.access_token);
-//       localStorage.setItem("token", response.data.access_token);
+//       sessionStorage.setItem("token", response.data.access_token);
 //       setSuccessAlert(true);
 //       setSuccessMsg("Login Successfully!");
 //       // alert("Login Successful!");
@@ -190,7 +190,7 @@ const LoginPage: React.FC = () => {
         token_type: string;
       }>(API.authAPI.login, { email, password });
 
-      localStorage.setItem("token", response.data.access_token);
+      sessionStorage.setItem("token", response.data.access_token);
       setSuccessAlert(true);
       setSuccessMsg("Login Successfully!");
       setTimeout(() => {

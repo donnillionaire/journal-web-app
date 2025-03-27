@@ -83,7 +83,7 @@ const CalendarApp = () => {
         console.log("Token has expired, redirecting to login screen...");
         setErrorAlert(true);
         setErrorMsg(error_text + " Redirecting to login page...");
-        localStorage.removeItem("token"); // Clear the expired token
+        sessionStorage.removeItem("token"); // Clear the expired token
         setTimeout(() => {
           navigate("/login");
         }, 2000); // 2-second delay before redirecting
@@ -119,10 +119,10 @@ const CalendarApp = () => {
   };
 
   const handleLogout = () => {
-    // Clear the token from localStorage
-    localStorage.removeItem("token");
+    // Clear the token from sessionStorage
+    sessionStorage.removeItem("token");
     // Optional: Clear any other user-related data
-    // localStorage.removeItem("user");
+    // sessionStorage.removeItem("user");
     // Redirect to the login page
     navigate("/login");
   };
