@@ -729,6 +729,11 @@
   resolved "https://registry.npmjs.org/@types/stylis/-/stylis-4.2.5.tgz"
   integrity sha512-1Xve+NMN7FWjY14vLoY5tL3BVEQ/n42YLwaqJIPYhotZ9uBHt87VceMwWQpzmdEt2TNXIorIFG+YeCUUW7RInw==
 
+"@types/wordcloud@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.npmjs.org/@types/wordcloud/-/wordcloud-1.2.2.tgz"
+  integrity sha512-UMKd/doXE3karDUd5l+2LqFKUU4SmuPWOT/VA22OrPOUGMlb8/qQvSf+DBLQf/sd8UphuBGxOK/jB/1BB5oQRw==
+
 "@typescript-eslint/eslint-plugin@8.27.0":
   version "8.27.0"
   resolved "https://registry.npmjs.org/@typescript-eslint/eslint-plugin/-/eslint-plugin-8.27.0.tgz"

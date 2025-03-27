@@ -3,12 +3,10 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import CalendarApp from "./components/Calendar";
-import Button from "@mui/material/Button";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/Login";
 import SignupPage from "./pages/SignUp";
 import SummariesPage from "./pages/Summaries";
-import WordCloudGraph from "./components/WordCloudGraph";
 import WordCloudComponent from "./components/WordCloud";
 function App() {
   // const [count, setCount] = useState(0);
