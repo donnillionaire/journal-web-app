@@ -1,3 +1,5 @@
+
+
 // import { useState, useEffect, useRef, useCallback } from "react";
 // import dayjs from "dayjs";
 // import { Menu, PlusCircle, X, XCircle } from "lucide-react";
@@ -471,9 +473,29 @@
 //                 </div>
 //               </div>
 //             )}
-//             <h2 className="text-xl font-semibold mb-4 text-gray-500">
-//               Entries on {dayjs(selectedDate).format("MMMM D, YYYY")}
-//             </h2>
+
+//             <div className="flex flex-row">
+//               <h2 className="text-xl font-semibold mb-4 text-gray-500">
+//                 Entries on {dayjs(selectedDate).format("MMMM D, YYYY")}
+//               </h2>
+
+//               {/* Add ml-auto to push the select element to the far right */}
+//               <select
+//                 className="ml-auto p-2 mb-2 bg-gray-300 rounded text-black"
+//                 value={newEvent.category}
+//                 onChange={(e) =>
+//                   setNewEvent({ ...newEvent, category: e.target.value })
+//                 }
+//               >
+//                 <option value="">Select Category</option>
+//                 <option value="Personal">Personal</option>
+//                 <option value="Work">Work</option>
+//                 <option value="Travel">Travel</option>
+//                 <option value="Health">Health</option>
+//                 <option value="Social">Social</option>
+//               </select>
+//             </div>
+
 //             {loading ? (
 //               <p className="text-gray-500">Loading entries...</p>
 //             ) : error ? (
@@ -520,6 +542,7 @@
 
 // export default CalendarApp;
 
+
 import { useState, useEffect, useRef, useCallback } from "react";
 import dayjs from "dayjs";
 import { Menu, PlusCircle, X, XCircle } from "lucide-react";
@@ -537,9 +560,7 @@ import { LinearProgress } from "@mui/material";
 
 const CalendarApp = () => {
   const currentYear = dayjs().year();
-  const [selectedDate, setSelectedDate] = useState(
-    dayjs().format("YYYY-MM-DD")
-  );
+  const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [events, setEvents] = useState<
     {
       id: string;
@@ -577,6 +598,7 @@ const CalendarApp = () => {
   const [successMsg, setSuccessMsg] = useState("");
   const [errorAlert, setErrorAlert] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(""); // State for selected category
   const navigate = useNavigate();
 
   // Fetch entries for the selected date
@@ -614,22 +636,17 @@ const CalendarApp = () => {
     }
   };
 
-  //DELETE ENTRY
-  // Handle deleting an event
+  // DELETE ENTRY
   const handleDelete = async (index: number) => {
     const eventToDelete = events[index]; // Get the event to delete
     if (!eventToDelete) return;
-
     try {
       setLoading(true); // Show loading state
       await deleteJournal(eventToDelete.id); // Call the backend to delete the entry
-
       // Remove the deleted event from the local state
       setEvents((prevEvents) => prevEvents.filter((_, i) => i !== index));
-
       // Refetch entries for the year to update the calendar
       await fetchEntriesForYear();
-
       // Show success alert
       setSuccessAlert(true);
       setSuccessMsg("Journal entry deleted successfully!");
@@ -645,10 +662,8 @@ const CalendarApp = () => {
   const handleLogout = () => {
     // Clear the token from localStorage
     localStorage.removeItem("token");
-
     // Optional: Clear any other user-related data
     // localStorage.removeItem("user");
-
     // Redirect to the login page
     navigate("/login");
   };
@@ -819,10 +834,18 @@ const CalendarApp = () => {
     return () => observer.disconnect();
   }, [months, loadPreviousMonth, loadNextMonth]);
 
+  // Filtered events based on the selected category
+  const filteredEvents =
+    selectedCategory === ""
+      ? events.filter((event) => event.date === selectedDate)
+      : events.filter(
+          (event) =>
+            event.date === selectedDate && event.category === selectedCategory
+        );
+
   return (
     <>
       {loading && <LinearProgress />}
-
       <GeneralSuccess
         open={successAlert}
         onClose={() => setSuccessAlert(false)}
@@ -897,7 +920,6 @@ const CalendarApp = () => {
                   <h3 className="px-[200px] text-lg font-bold mb-2 text-gray-300">
                     {month.format("MMMM YYYY")}
                   </h3>
-
                   <div className="grid grid-cols-7 gap-2">
                     {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
                       (day) => (
@@ -914,7 +936,6 @@ const CalendarApp = () => {
                     ).map((day) => {
                       const formattedDay = day.format("YYYY-MM-DD");
                       const hasEntry = datesWithEntries.includes(formattedDay);
-
                       return (
                         <button
                           key={formattedDay}
@@ -993,49 +1014,56 @@ const CalendarApp = () => {
                 </div>
               </div>
             )}
-
-            <div>
+            <div className="flex flex-row">
               <h2 className="text-xl font-semibold mb-4 text-gray-500">
                 Entries on {dayjs(selectedDate).format("MMMM D, YYYY")}
               </h2>
+              {/* Add ml-auto to push the select element to the far right */}
+              <select
+                className="ml-auto p-2 mb-2 bg-gray-300 rounded text-black"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+              >
+                <option value="">All Categories</option>
+                <option value="Personal">Personal</option>
+                <option value="Work">Work</option>
+                <option value="Travel">Travel</option>
+                <option value="Health">Health</option>
+                <option value="Social">Social</option>
+              </select>
             </div>
-
             {loading ? (
               <p className="text-gray-500">Loading entries...</p>
             ) : error ? (
               <p className="text-red-500">{error}</p>
-            ) : events.filter((event) => event.date === selectedDate).length >
-              0 ? (
-              events
-                .filter((event) => event.date === selectedDate)
-                .map((event, index) => (
-                  <div
-                    key={index}
-                    className="relative group p-6 mb-4 bg-gray-600 rounded-sm cursor-pointer shadow-md hover:bg-gray-800 transition"
-                    onClick={() => handleEditClick(event)} // Click to edit
+            ) : filteredEvents.length > 0 ? (
+              filteredEvents.map((event, index) => (
+                <div
+                  key={index}
+                  className="relative group p-6 mb-4 bg-gray-600 rounded-sm cursor-pointer shadow-md hover:bg-gray-800 transition"
+                  onClick={() => handleEditClick(event)} // Click to edit
+                >
+                  <h3 className="text-xl font-bold text-white">
+                    {event.title}
+                  </h3>
+                  <p className="text-gray-400">{event.description}</p>
+                  <p className="text-sm text-gray-300 mt-2">
+                    Category: {event.journal_category || "Uncategorized"}
+                  </p>
+                  {/* X Icon (Hidden by default, appears on hover) */}
+                  <span
+                    className="absolute right-3 top-3 text-gray-400 opacity-0 group-hover:opacity-100 transition cursor-pointer hover:text-red-500"
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent triggering parent onClick
+                      handleDelete(index);
+                    }}
                   >
-                    <h3 className="text-xl font-bold text-white">
-                      {event.title}
-                    </h3>
-                    <p className="text-gray-400">{event.description}</p>
-                    <p className="text-sm text-gray-300 mt-2">
-                      Category: {event.journal_category || "Uncategorized"}
-                    </p>
-
-                    {/* X Icon (Hidden by default, appears on hover) */}
-                    <span
-                      className="absolute right-3 top-3 text-gray-400 opacity-0 group-hover:opacity-100 transition cursor-pointer hover:text-red-500"
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent triggering parent onClick
-                        handleDelete(index);
-                      }}
-                    >
-                      ❌
-                    </span>
-                  </div>
-                ))
+                    ✕
+                  </span>
+                </div>
+              ))
             ) : (
-              <p className="text-gray-500">No entries for this day.</p>
+              <p className="text-gray-500">No entries for this category.</p>
             )}
           </div>
         </div>

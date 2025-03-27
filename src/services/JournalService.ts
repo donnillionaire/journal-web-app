@@ -94,7 +94,7 @@ export const getJournalsByYear = async (
   };
 
 
-
+//delete journal
   export const deleteJournal = async (journalId: string): Promise<void> => {
     try {
       await apiClient.delete(API.journalAPI.deleteJournalByID(journalId)); // Use API endpoint function
