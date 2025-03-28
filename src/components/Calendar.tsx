@@ -204,6 +204,7 @@ const CalendarApp = () => {
                   ...ev,
                   title: updatedEntry.title,
                   description: updatedEntry.description,
+                  content: updatedEntry.content,
                   category: updatedEntry.category,
                   sentiment:updatedEntry.sentiment
                 }
