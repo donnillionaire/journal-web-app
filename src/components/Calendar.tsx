@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef, useCallback } from "react";
 import dayjs from "dayjs";
 import { Menu, PlusCircle, X, XCircle } from "lucide-react";
@@ -28,6 +27,7 @@ const CalendarApp = () => {
       description: string;
       category: string;
       journal_category: string;
+      sentiment: string;
     }[]
   >([]);
   const [datesWithEntries, setDatesWithEntries] = useState<string[]>([]); // Dates with entries
@@ -36,6 +36,7 @@ const CalendarApp = () => {
     title: "",
     description: "",
     category: "",
+    sentiment: "",
   });
   const [months, setMonths] = useState(() =>
     Array.from({ length: dayjs().month() + 1 }, (_, i) =>
@@ -73,6 +74,7 @@ const CalendarApp = () => {
         id: entry.id,
         category: entry.journal_category || "Uncategorized", // Default to "Uncategorized" if no category exists
         journal_category: entry.journal_category || "Uncategorized",
+        sentiment: entry.sentiment,
       }));
       setEvents(formattedEvents); // Update events state
     } catch (err: any) {
@@ -158,7 +160,7 @@ const CalendarApp = () => {
   // Handle opening the form for adding a new event
   const handleAddEventClick = () => {
     setEditingEvent(null); // Reset editing mode
-    setNewEvent({ title: "", description: "", category: "" }); // Clear form fields
+    setNewEvent({ title: "", description: "", category: "", sentiment: "" }); // Clear form fields
     setShowForm(true);
   };
 
@@ -169,12 +171,14 @@ const CalendarApp = () => {
     title: string;
     description: string;
     category: string;
+    sentiment: string;
   }) => {
     setEditingEvent(event); // Set the event to be edited
     setNewEvent({
       title: event.title,
       description: event.description,
       category: event.category,
+      sentiment: event.sentiment,
     }); // Populate form fields
     setShowForm(true);
   };
@@ -222,13 +226,14 @@ const CalendarApp = () => {
             description: createdEntry.content,
             category: createdEntry.journal_category || "Uncategorized",
             journal_category: createdEntry.journal_category || "Uncategorized",
+            sentiment: "",
           },
         ]);
       }
       // Refetch entries for the year to update the calendar
       await fetchEntriesForYear();
       // Reset form and exit edit/add mode
-      setNewEvent({ title: "", description: "", category: "" });
+      setNewEvent({ title: "", description: "", category: "", sentiment: "" });
       setEditingEvent(null);
       setShowForm(false);
       // Show success alert
@@ -245,7 +250,7 @@ const CalendarApp = () => {
 
   // Handle canceling the form
   const handleCancel = () => {
-    setNewEvent({ title: "", description: "", category: "" }); // Clear form fields
+    setNewEvent({ title: "", description: "", category: "", sentiment: "" }); // Clear form fields
     setEditingEvent(null); // Exit edit mode
     setShowForm(false); // Hide the form
   };
@@ -332,7 +337,7 @@ const CalendarApp = () => {
         </div> */}
         <div className="flex h-screen bg-white text-white shadow-xl">
           {/* Collapsible Sidebar */}
-          
+
           {/* Calendar */}
           <div
             className="w-2/5 p-5 border-r border-gray-700 overflow-y-auto"
@@ -467,12 +472,11 @@ const CalendarApp = () => {
               </select>
 
               <button
-                onClick={handleAddEventClick} 
+                onClick={handleAddEventClick}
                 className="flex items-center mx-2 gap-2 px-4 mb-2 rounded text-white bg-blue-500 hover:bg-blue-600"
               >
                 <PlusCircle size={20} />
                 New
-    
               </button>
             </div>
             {loading ? (
@@ -492,6 +496,17 @@ const CalendarApp = () => {
                   <p className="text-gray-400">{event.description}</p>
                   <p className="text-sm text-gray-300 mt-2">
                     Category: {event.journal_category || "Uncategorized"}
+                  </p>
+                  <p className="text-sm text-gray-300 mt-2">
+                    <span
+                      className={`text-white text-xs font-semibold px-2 py-1 rounded ${
+                        event.sentiment === "NEGATIVE"
+                          ? "bg-orange-500"
+                          : "bg-green-500"
+                      }`}
+                    >
+                      {event.sentiment || ""}
+                    </span>
                   </p>
                   {/* X Icon (Hidden by default, appears on hover) */}
                   <span
