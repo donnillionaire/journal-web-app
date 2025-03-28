@@ -69,8 +69,11 @@ export const updateJournal = async (id: string, data: any) => {
       API.journalAPI.updateJournalEntryByID(id),
       data
     );
+
+    console.log("response data", response.data)
    
-    return response.data.data; // Return the parsed response data
+    return response.data; // Return the parsed response data
+
   } catch (error) {
     console.error("Error updating journal entry:", error);
     throw error; // Re-throw the error for handling in the component

@@ -196,14 +196,16 @@ const CalendarApp = () => {
           journal_category: newEvent.category,
         };
         const updatedEntry = await updateJournal(editingEvent.id, requestData);
+        console.log("updated entry", updatedEntry)
         setEvents((prevEvents) =>
           prevEvents.map((ev) =>
-            ev.id === editingEvent.id
+            ev.id === updatedEntry.id
               ? {
                   ...ev,
-                  title: newEvent.title,
-                  description: newEvent.description,
-                  category: newEvent.category,
+                  title: updatedEntry.title,
+                  description: updatedEntry.description,
+                  category: updatedEntry.category,
+                  sentiment:updatedEntry.sentiment
                 }
               : ev
           )
@@ -226,7 +228,7 @@ const CalendarApp = () => {
             description: createdEntry.content,
             category: createdEntry.journal_category || "Uncategorized",
             journal_category: createdEntry.journal_category || "Uncategorized",
-            sentiment: "",
+            sentiment:createdEntry.sentiment,
           },
         ]);
       }
@@ -276,7 +278,7 @@ const CalendarApp = () => {
     window.scrollTo(0, 2); // Scrolls to the top when the component mounts
     const container = containerRef.current;
     if (!container) return;
-    container.scrollTop = 300; // Scroll to 300px from the top
+    container.scrollTop = 600; // Scroll to 300px from the top
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {

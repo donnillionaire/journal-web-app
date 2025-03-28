@@ -26,7 +26,6 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
           <NavLink to="/summaries" className="hover:text-gray-400 transition">Summaries</NavLink>
-          <NavLink to="/contact" className="hover:text-gray-400 transition">Contact us</NavLink>
           <button onClick={handleLogout} className="bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 flex items-center transition">
             Logout <RxAvatar size={20} className="ml-2" />
           </button>
@@ -44,7 +43,6 @@ const Navbar = () => {
       <div className={`md:hidden absolute top-16 left-0 w-full bg-gray-900 transition-transform ${nav ? "translate-x-0" : "-translate-x-full"} duration-300`}>
         <div className="flex flex-col items-center gap-6 py-6">
           <NavLink to="/summaries" className="hover:text-gray-400 transition" onClick={() => setNav(false)}>Summaries</NavLink>
-          <NavLink to="/contact" className="hover:text-gray-400 transition" onClick={() => setNav(false)}>Contact us</NavLink>
           <button onClick={handleLogout} className="bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 flex items-center transition">
             Logout <RxAvatar size={20} className="ml-2" />
           </button>
